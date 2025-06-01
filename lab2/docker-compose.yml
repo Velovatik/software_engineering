@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  api_service:
+    build: 
+      context: ./api_service
+    ports:
+      - "8000:8000"
+    environment:
+      - SECRET_KEY=your-secret-key-keep-it-secret
+    networks:
+      - social_network
+
+  chat_service:
+    build:
+      context: ./chat_service
+    ports:
+      - "8001:8001"
+    environment:
+      - SECRET_KEY=your-secret-key-keep-it-secret
+    networks:
+      - social_network
+
+networks:
+  social_network:
+    driver: bridge
+
+volumes:
+  postgres_data: 
