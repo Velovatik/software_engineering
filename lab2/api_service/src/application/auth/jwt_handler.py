@@ -17,6 +17,7 @@ class JWTHandler:
         to_encode.update({"exp": expire})
         return jwt.encode(to_encode, self.secret_key, algorithm=self.algorithm)
 
+
     def decode_token(self, token: str) -> Optional[str]:
         try:
             payload = jwt.decode(token, self.secret_key, algorithms=[self.algorithm])

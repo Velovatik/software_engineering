@@ -11,15 +11,13 @@ from ..application.auth.jwt_handler import JWTHandler
 from ..infrastructure.repositories.in_memory_user_repository import InMemoryUserRepository
 from ..infrastructure.repositories.in_memory_wall_repository import InMemoryWallRepository
 
-# Configuration
 SECRET_KEY = "your-secret-key-keep-it-secret"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Setup
+
 app = FastAPI(title="Social Network API Service")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Dependencies
 user_repository = InMemoryUserRepository()
 wall_repository = InMemoryWallRepository()
 user_use_cases = UserUseCases(user_repository)
@@ -43,7 +41,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)) -> User:
         )
     return user
 
-# Authentication endpoint
 @app.post("/token")
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = user_use_cases.authenticate_user(form_data.username, form_data.password)
@@ -59,7 +56,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-# User endpoints
 @app.post("/api/v1/user/create", response_model=User)
 async def create_user(user: User, password: str, current_user: User = Depends(get_current_user)):
     if current_user.username != "admin":
@@ -76,7 +72,6 @@ async def search_user_by_login(username: str, current_user: User = Depends(get_c
         raise HTTPException(status_code=404, detail="User not found")
     return user
 
-# Wall endpoints
 @app.post("/api/v1/wall/post", response_model=WallPost)
 async def create_wall_post(post: WallPost, current_user: User = Depends(get_current_user)):
     post.author = current_user.username

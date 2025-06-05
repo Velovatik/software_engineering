@@ -1,0 +1,18 @@
+
+fastapi==0.68.0
+uvicorn==0.15.0
+sqlalchemy==1.4.23
+psycopg2-binary==2.9.7
+
+python-jose==3.3.0
+bcrypt==3.2.2
+python-multipart==0.0.5
+
+aioredis==2.0.1
+
+
+wrk==0.3.2
+
+# Kafka-related dependencies
+aiokafka==0.8.1
+kafka-python==2.0.2 

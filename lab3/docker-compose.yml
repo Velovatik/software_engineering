@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api_service:
+    build: ./api_service
+    ports:
+      - "8000:8000"
+    depends_on:
+      - db
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=social_network
+      - POSTGRES_HOST=db
+
+  chat_service:
+    build: ./chat_service
+    ports:
+      - "8001:8001"
+
+  db:
+    image: postgres:14
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=social_network
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data: 

@@ -7,16 +7,13 @@ from typing import Optional, List
 from pydantic import BaseModel
 from src.presentation.api import app
 
-# Security configuration
 SECRET_KEY = "your-secret-key-keep-it-secret"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Password hashing
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-# Models
 class User(BaseModel):
     username: str
     email: Optional[str] = None
@@ -39,7 +36,6 @@ class WallPost(BaseModel):
     author: str
     created_at: datetime = datetime.now()
 
-# In-memory storage
 users_db = {
     "admin": {
         "username": "admin",
@@ -100,7 +96,6 @@ async def get_current_user(token: str = Depends(oauth2_scheme)):
         raise credentials_exception
     return user
 
-# Authentication endpoint
 @app.post("/token", response_model=Token)
 async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends()):
     user = authenticate_user(users_db, form_data.username, form_data.password)
@@ -116,7 +111,6 @@ async def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(
     )
     return {"access_token": access_token, "token_type": "bearer"}
 
-# User endpoints
 @app.post("/api/v1/user/create", response_model=User)
 async def create_user(user: User, password: str, current_user: User = Depends(get_current_user)):
     if current_user.username != "admin":
@@ -135,7 +129,6 @@ async def search_user_by_login(username: str, current_user: User = Depends(get_c
         raise HTTPException(status_code=404, detail="User not found")
     return users_db[username]
 
-# Wall endpoints
 @app.post("/api/v1/wall/post", response_model=WallPost)
 async def create_wall_post(post: WallPost, current_user: User = Depends(get_current_user)):
     post.author = current_user.username
